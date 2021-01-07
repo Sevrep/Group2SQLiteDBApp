@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     SQLiteDatabase db;
@@ -53,12 +55,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == btAdd) {
-            db.execSQL("INSERT INTO student VALUES('" + etStdntID.getEditText().getText().toString().trim() + "', '" + etStdntName.getEditText().getText().toString().trim() + "', '" + etStdntName.getEditText().getText().toString().trim() + "');");
+            db.execSQL("INSERT INTO student VALUES('" + Objects.requireNonNull(etStdntID.getEditText()).getText().toString().trim() + "', '" + Objects.requireNonNull(etStdntName.getEditText()).getText().toString().trim() + "', '" + etStdntName.getEditText().getText().toString().trim() + "');");
             showMessage("Success", "Record added.");
             clearText();
         }
         else if (view == btDelete) {
-            String selectRecord = "SELECT * FROM student WHERE stdnt_id = '" + etStdntID.getEditText().getText().toString().trim() + "';";
+            String selectRecord = "SELECT * FROM student WHERE stdnt_id = '" + Objects.requireNonNull(etStdntID.getEditText()).getText().toString().trim() + "';";
             Cursor c = db.rawQuery(selectRecord, null);
             if (c.moveToFirst()) {
                 String deleteRecord = "DELETE FROM student WHERE stdnt_id = '" + etStdntID.getEditText().getText().toString().trim() + "';";
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             clearText();
         }
         else if (view == btSearch) {
-            String searchRecord = "SELECT * FROM student WHERE stdnt_id = '" + etStdntID.getEditText().getText().toString().trim() + "';";
+            String searchRecord = "SELECT * FROM student WHERE stdnt_id = '" + Objects.requireNonNull(etStdntID.getEditText()).getText().toString().trim() + "';";
             Cursor c = db.rawQuery(searchRecord, null);
             StringBuilder buffer = new StringBuilder();
             if (c.moveToFirst()) {
@@ -87,13 +89,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
             StringBuilder buffer = new StringBuilder();
-            if (c.moveToFirst()) {
+            while (c.moveToNext()) {
                 buffer.append("Id: ").append(c.getString(0)).append("\n");
                 buffer.append("Name: ").append(c.getString(1)).append("\n");
                 buffer.append("Program: ").append(c.getString(2)).append("\n\n");
             }
-            c.close();
             showMessage("Student Details", buffer.toString());
+            c.close();
         }
         else {
             throw new IllegalStateException("Unexpected value: " + view.getId());
@@ -109,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void clearText() {
-        etStdntID.getEditText().setText("");
-        etStdntName.getEditText().setText("");
-        etStdntProg.getEditText().setText("");
+        Objects.requireNonNull(etStdntID.getEditText()).setText("");
+        Objects.requireNonNull(etStdntName.getEditText()).setText("");
+        Objects.requireNonNull(etStdntProg.getEditText()).setText("");
     }
 }
